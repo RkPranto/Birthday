@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Add">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:background="@drawable/toolbar"
+        android:elevation="20dp"
+        app:title="Birthday Helper"
+        app:titleTextColor="#FFF">
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_margin="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="10dp"
+            android:theme="@style/TextInputLayoutHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:drawablePadding="12dp"
+                android:id="@+id/name_et"
+                android:drawableLeft="@drawable/person"
+                android:hint="Enter Name"
+                android:layout_marginBottom="10dp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:theme="@style/TextInputLayoutHint"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:drawableLeft="@drawable/contact"
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/contact_et"
+                android:hint="Enter Contact"
+                android:paddingLeft="15dp"
+                android:drawablePadding="12dp"
+                android:layout_marginBottom="10dp"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/birthday"
+            android:layout_marginBottom="10dp"
+            android:text="Select Birthday"
+            android:textColor="#FFF"
+            android:foreground="?selectableItemBackground"
+            android:background="#E6E6"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            />
+
+
+
+        <Button
+            android:id="@+id/save_btn"
+            android:text="Save"
+            android:layout_gravity="center"
+            android:textColor="#FFF"
+            android:foreground="?selectableItemBackground"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="45dp"
+            android:background="@drawable/button"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
