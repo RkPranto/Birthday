@@ -1,23 +1,28 @@
 package com.example.birthday;
 
+
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
 
-public class Add extends AppCompatActivity {
-
+public class AddFragment extends Fragment {
     EditText mName, mContact;
     Button mSave, mBirthday;
     BirthDatabase birthDatabase;
@@ -25,18 +30,24 @@ public class Add extends AppCompatActivity {
     int d, m , y;
     Toolbar mToolbar;
     DatePickerDialog.OnDateSetListener onDateSetListener;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add);
-        mToolbar = findViewById( R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        mName = findViewById(R.id.name_et);
-        mContact = findViewById(R.id.contact_et);
-        mBirthday = findViewById(R.id.birthday);
-        mSave = findViewById(R.id.save_btn);
+    Context context;
 
-        birthDatabase = new BirthDatabase(this);
+    public AddFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        this.context = context;
+        super.onAttach(context);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_add, container, false);
+        init(v);
+
 
         mBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +57,7 @@ public class Add extends AppCompatActivity {
                 int month = calendar.get(Calendar.MONTH);
                 int year = calendar.get(Calendar.YEAR);
 
-                DatePickerDialog dialog = new DatePickerDialog(Add.this,
+                DatePickerDialog dialog = new DatePickerDialog(context,
                         android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth,
                         onDateSetListener,
                         year,month,day);
@@ -79,17 +90,29 @@ public class Add extends AppCompatActivity {
                 ContactModel contactModel = new ContactModel(name, contact,d, m, y);
                 boolean fine = birthDatabase.insertContact(contactModel);
                 if(fine){
-                    Toast.makeText(Add.this,"Saved Successfully !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,"Saved Successfully !", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(Add.this,"Saving Error !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,"Saving Error !", Toast.LENGTH_SHORT).show();
                 }
-                finish();
-                Intent intent = new Intent(Add.this,MainActivity.class);
-                startActivity(intent);
+
+                FragmentManager fm = getFragmentManager();
+                fm.beginTransaction().replace(R.id.content_area,new HomeFragment()).commit();
 
             }
         });
+
+
+        return  v;
+    }
+
+    private void init(View v) {
+        mName = v.findViewById(R.id.name_et);
+        mContact = v.findViewById(R.id.contact_et);
+        mBirthday = v.findViewById(R.id.birthday);
+        mSave = v.findViewById(R.id.save_btn);
+
+        birthDatabase = new BirthDatabase(context);
     }
 
 }

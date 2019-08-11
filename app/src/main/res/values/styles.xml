@@ -6,11 +6,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
     <style name="TextInputLayoutHint" parent="">
         <item name="android:textColorHint">#545454</item>
-        <item name="colorControlActivated">#2dbc99</item>
+        <item name="colorControlActivated">#4CAF50</item>
         <item name="android:textSize">15sp</item>
     </style>
 

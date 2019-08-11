@@ -16,12 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Handler;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
     Context context;
@@ -140,9 +143,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
                     onDateSetListener = new DatePickerDialog.OnDateSetListener() {
                         @Override
-                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-                            String bd = dayOfMonth + " / "+month+ " / "+year;
+                        public void onDateSet(DatePicker view, int y, int m, int d) {
+                            year = y;
+                            month = y;
+                            day = d;
+                            String bd = d + " / "+m+ " / "+y;
                             upBirthdate.setText(bd);
                         }
                     };
@@ -150,12 +155,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                     mDelete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(context,"Delete: "+id+" "+ name+" "+contact,Toast.LENGTH_SHORT).show();
-                            boolean x = birthDatabase.deleteItem(id);
+                            /*Toast.makeText(context,"Delete: "+id+" "+ name+" "+contact,Toast.LENGTH_SHORT).show();*/
+                            boolean x = birthDatabase.deleteItem(contactModel);
 
                             if(x){
                                 Toast.makeText(context,"Deleted Successfully !",Toast.LENGTH_SHORT).show();
-
+                                goToHomeFragment(v);
                             }
                             else{
                                 Toast.makeText(context,"Deleted Failed !",Toast.LENGTH_SHORT).show();
@@ -176,6 +181,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                             boolean x = birthDatabase.updateItem(contact);
                             if(x){
                                 Toast.makeText(context,"Updated Successfully !",Toast.LENGTH_SHORT).show();
+                                goToHomeFragment(v);
                             }
                             else{
                                 Toast.makeText(context,"Updated Failed !",Toast.LENGTH_SHORT).show();
@@ -183,8 +189,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                             dialog.dismiss();
                         }
                     });
-
-
                 }
             });
         }
@@ -196,4 +200,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         arrayList = filteredList;
         notifyDataSetChanged();
     }
+
+    public void goToHomeFragment(View v){
+        HomeFragment homeFragment = new HomeFragment();
+        FragmentManager fragmentManager = ((FragmentActivity)v.getContext()).getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_area,homeFragment)
+                .commit();
+    }
+
 }

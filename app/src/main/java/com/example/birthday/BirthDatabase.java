@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class BirthDatabase {
     SQLiteDatabase sqLiteDatabase;
@@ -78,9 +80,11 @@ public class BirthDatabase {
         return arrayList;
     }
 
-    public boolean deleteItem(int id) {
+    public boolean deleteItem(ContactModel contactModel) {
         this.open();
-        int deleted = sqLiteDatabase.delete(DBOpenHelper.DB_NAME, sqLiteOpenHelper.COL_ID + "=?", new String[]{String.valueOf(id)});
+        int deleted = sqLiteDatabase.delete(DBOpenHelper.DB_NAME,
+                sqLiteOpenHelper.COL_ID + "=?",
+                new String[]{String.valueOf(contactModel.getId())});
         this.close();
         if (deleted > 0) {
             return true;
@@ -110,5 +114,131 @@ public class BirthDatabase {
         } else {
             return false;
         }
+    }
+
+
+
+    public ArrayList<ContactModel> getTodayBirth() {
+        this.open();
+        ArrayList<ContactModel> arrayList = new ArrayList<>();
+        //Log.d(CONTACT_DATABASE, "get all start");
+
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+
+        Cursor cursor = sqLiteDatabase.query(DBOpenHelper.DB_NAME,
+                null,
+                DBOpenHelper.COL_DAY+"=? AND "+ DBOpenHelper.COL_MONTH+"= ?",
+                new String[]{String.valueOf(day), String.valueOf(month)},
+                null,null,null,null
+                );
+        if (cursor.moveToFirst()) {
+            do {
+                int id_idx = cursor.getColumnIndex(DBOpenHelper.COL_ID);
+                int name_idx = cursor.getColumnIndex(DBOpenHelper.COL_NAME);
+                int contact_idx = cursor.getColumnIndex(DBOpenHelper.COL_CONTACT);
+                int day_idx = cursor.getColumnIndex(DBOpenHelper.COL_DAY);
+                int month_idx = cursor.getColumnIndex(DBOpenHelper.COL_MONTH);
+                int year_idx = cursor.getColumnIndex(DBOpenHelper.COL_YEAR);
+                arrayList.add(new ContactModel(
+                                cursor.getInt(id_idx),
+                                cursor.getString(name_idx),
+                                cursor.getString(contact_idx),
+                                cursor.getInt(day_idx),
+                                cursor.getInt(month_idx),
+                                cursor.getInt(year_idx)
+                        )
+                );
+            } while (cursor.moveToNext());
+        }
+        this.close();
+        cursor.close();
+        //Log.d(CONTACT_DATABASE, "get all end");
+        return arrayList;
+    }
+
+
+    public ArrayList<ContactModel> getTommorowBirth() {
+        this.open();
+        ArrayList<ContactModel> arrayList = new ArrayList<>();
+        //Log.d(CONTACT_DATABASE, "get all start");
+
+        Calendar calendar = Calendar.getInstance();
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.add(calendar.DATE, 1);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+
+
+        Cursor cursor = sqLiteDatabase.query(DBOpenHelper.DB_NAME,
+                null,
+                DBOpenHelper.COL_DAY+"=? AND "+ DBOpenHelper.COL_MONTH+"= ?",
+                new String[]{String.valueOf(day), String.valueOf(month)},
+                null,null,null,null
+        );
+        if (cursor.moveToFirst()) {
+            do {
+                int id_idx = cursor.getColumnIndex(DBOpenHelper.COL_ID);
+                int name_idx = cursor.getColumnIndex(DBOpenHelper.COL_NAME);
+                int contact_idx = cursor.getColumnIndex(DBOpenHelper.COL_CONTACT);
+                int day_idx = cursor.getColumnIndex(DBOpenHelper.COL_DAY);
+                int month_idx = cursor.getColumnIndex(DBOpenHelper.COL_MONTH);
+                int year_idx = cursor.getColumnIndex(DBOpenHelper.COL_YEAR);
+                arrayList.add(new ContactModel(
+                                cursor.getInt(id_idx),
+                                cursor.getString(name_idx),
+                                cursor.getString(contact_idx),
+                                cursor.getInt(day_idx),
+                                cursor.getInt(month_idx),
+                                cursor.getInt(year_idx)
+                        )
+                );
+            } while (cursor.moveToNext());
+        }
+        this.close();
+        cursor.close();
+        //Log.d(CONTACT_DATABASE, "get all end");
+        return arrayList;
+    }
+
+    public ArrayList<ContactModel> getMonthBirth() {
+        this.open();
+        ArrayList<ContactModel> arrayList = new ArrayList<>();
+        //Log.d(CONTACT_DATABASE, "get all start");
+
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+
+        Cursor cursor = sqLiteDatabase.query(DBOpenHelper.DB_NAME,
+                null,
+                DBOpenHelper.COL_MONTH+"= ?",
+                new String[]{String.valueOf(month)},
+                null,null,null,null
+        );
+        if (cursor.moveToFirst()) {
+            do {
+                int id_idx = cursor.getColumnIndex(DBOpenHelper.COL_ID);
+                int name_idx = cursor.getColumnIndex(DBOpenHelper.COL_NAME);
+                int contact_idx = cursor.getColumnIndex(DBOpenHelper.COL_CONTACT);
+                int day_idx = cursor.getColumnIndex(DBOpenHelper.COL_DAY);
+                int month_idx = cursor.getColumnIndex(DBOpenHelper.COL_MONTH);
+                int year_idx = cursor.getColumnIndex(DBOpenHelper.COL_YEAR);
+                arrayList.add(new ContactModel(
+                                cursor.getInt(id_idx),
+                                cursor.getString(name_idx),
+                                cursor.getString(contact_idx),
+                                cursor.getInt(day_idx),
+                                cursor.getInt(month_idx),
+                                cursor.getInt(year_idx)
+                        )
+                );
+            } while (cursor.moveToNext());
+        }
+        this.close();
+        cursor.close();
+        //Log.d(CONTACT_DATABASE, "get all end");
+        return arrayList;
     }
 }

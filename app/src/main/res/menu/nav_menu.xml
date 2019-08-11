@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item android:id="@+id/home"
+            android:icon="@drawable/home"
+            android:title="Home" />
+        <item android:id="@+id/add_new"
+            android:icon="@drawable/add"
+            android:title="Add new" />
+        <item android:id="@+id/setting"
+            android:icon="@drawable/setting"
+            android:title="Setting" />
+    </group>
+
+    <item android:title="Birthday">
+        <menu>
+
+            <item android:id="@+id/todaybd"
+                android:icon="@drawable/birthday"
+                android:title="Today" />
+            <item android:id="@+id/tomorrowbd"
+                android:icon="@drawable/birthday"
+                android:title="Tomorrow" />
+            <item android:id="@+id/thismonthbd"
+                android:icon="@drawable/birthday"
+                android:title="This Month" />
+        </menu>
+    </item>
+
+
+    <item android:title="Import From">
+        <menu>
+            <item android:id="@+id/contact_import"
+                android:icon="@drawable/contact_import"
+                android:title="Contact" />
+            <item android:id="@+id/fb_import"
+                android:icon="@drawable/people_add"
+                android:title="Facebook" />
+
+        </menu>
+    </item>
+
+    <item android:title="Other">
+        <menu>
+            <item android:id="@+id/share"
+                android:icon="@drawable/share"
+                android:title="Share" />
+            <item android:id="@+id/privacy"
+                android:icon="@drawable/privacy"
+                android:title="Privacy Policy" />
+            <item android:id="@+id/help"
+                android:icon="@drawable/help"
+                android:title="Help" />
+            <item android:id="@+id/about_devloper"
+                android:icon="@drawable/about"
+                android:title="About Developer" />
+        </menu>
+    </item>
+</menu>
