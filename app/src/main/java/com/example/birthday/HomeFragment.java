@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,8 +35,7 @@ public class HomeFragment extends Fragment {
     Context context;
     ArrayList<ContactModel> arrayList= new ArrayList<>();
     SearchView searchView;
-
-    OnClickDrawerOpen onClickDrawerOpen;
+    TextView noData;
 
 
     public interface drawerLayoutChange{
@@ -68,8 +68,6 @@ public class HomeFragment extends Fragment {
         });
         loadRecyclerContent(arrayList);
 
-        onClickDrawerOpen = (OnClickDrawerOpen) getActivity();
-
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +76,7 @@ public class HomeFragment extends Fragment {
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.replace(R.id.content_area,new AddFragment()).commit();
 
-                Toast.makeText(context,"Add Fragment", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"Add Fragment", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -88,6 +86,7 @@ public class HomeFragment extends Fragment {
     private void init(View v) {
         recyclerView = v.findViewById(R.id.birthday_rv);
         addBtn = v.findViewById(R.id.add_btn);
+        noData = v.findViewById(R.id.no_data);
 
         birthDatabase = new BirthDatabase(context);
 
@@ -95,11 +94,18 @@ public class HomeFragment extends Fragment {
 
 
     private void loadRecyclerContent(ArrayList<ContactModel> array) {
-        contactAdapter = new ContactAdapter(context,array);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL,false);
-        recyclerView.setLayoutManager(layoutManager);
+        if(array != null){
+            contactAdapter = new ContactAdapter(context,array);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL,false);
+            recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(contactAdapter);
+            recyclerView.setAdapter(contactAdapter);
+            noData.setVisibility(View.GONE);
+        }
+        else{
+            noData.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -131,22 +137,21 @@ public class HomeFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.search_bar:
-                Toast.makeText(context,"SearchBar: "+item.getItemId(),Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context,"SearchBar: "+item.getItemId(),Toast.LENGTH_SHORT).show();
                 return true;
             case  R.id.clear:
-
-                Toast.makeText(context,"Clear"+item.getItemId(),Toast.LENGTH_SHORT).show();
+                birthDatabase.deleteAll();
+                loadRecyclerContent(null);
+                //Toast.makeText(context,"Cleared",Toast.LENGTH_SHORT).show();
                 return true;
 
             case  R.id.exit:
                 getActivity().finish();
-
-                Toast.makeText(context,"Exit ",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"Exit ",Toast.LENGTH_SHORT).show();
                 return true;
 
             default:
-                onClickDrawerOpen.openNavDrawer(true);
-                Toast.makeText(context,"Default: "+item.getItemId(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"Wrong Click!!!",Toast.LENGTH_SHORT).show();
                 return true;
         }
     }
@@ -159,9 +164,5 @@ public class HomeFragment extends Fragment {
             }
         }
         contactAdapter.filterList(contacts);
-    }
-
-    public interface OnClickDrawerOpen{
-        void openNavDrawer(boolean x);
     }
 }

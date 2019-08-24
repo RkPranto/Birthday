@@ -28,7 +28,7 @@ public class BirthdayFragement extends Fragment {
     BirthDatabase  birthDatabase;
     Context context;
     ArrayList<ContactModel> arrayList= new ArrayList<>();
-    TextView birthText;
+    TextView birthText, noData;
     String listType;
 
     public BirthdayFragement() {
@@ -74,8 +74,7 @@ public class BirthdayFragement extends Fragment {
             }
         });
 
-        if(arrayList != null)
-            loadRecyclerContent(arrayList);
+        loadRecyclerContent(arrayList);
 
         return v;
     }
@@ -86,16 +85,24 @@ public class BirthdayFragement extends Fragment {
         recyclerView = v.findViewById(R.id.birthday_list);
         birthDatabase = new BirthDatabase(context);
         birthText = v.findViewById(R.id.day_tv);
+        noData = v.findViewById(R.id.no_data);
 
     }
 
 
     private void loadRecyclerContent(ArrayList<ContactModel> array) {
-        contactAdapter = new ContactAdapter(context,array);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL,false);
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.setAdapter(contactAdapter);
+        if(array != null){
+            noData.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            contactAdapter = new ContactAdapter(context,array);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL,false);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(contactAdapter);
+        }
+        else{
+            noData.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
     }
 
 }

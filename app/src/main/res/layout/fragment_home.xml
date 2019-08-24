@@ -15,6 +15,18 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
+    <TextView
+        android:id="@+id/no_data"
+        android:padding="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No data found !"
+        android:visibility="gone"
+        android:textColor="#4B574B"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_btn"

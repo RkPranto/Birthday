@@ -13,6 +13,9 @@
         app:showAsAction="never"
         android:title="Clear All"/>
 
+
+
+
     <item android:id="@+id/exit"
         android:icon="@drawable/share"
         app:showAsAction="never"

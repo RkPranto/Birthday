@@ -18,9 +18,21 @@
         android:paddingLeft="15dp"
         android:paddingVertical="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="0dp"
-        android:background="#501CB8"
+        android:layout_marginTop="3dp"
+        android:background="@color/colorgreen"
         />
+
+    <TextView
+        android:id="@+id/no_data"
+        android:padding="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No data found !"
+        android:visibility="gone"
+        android:textColor="#4B574B"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/birthday_list"

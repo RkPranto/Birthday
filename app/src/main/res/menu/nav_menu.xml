@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group>
+    <group android:checkableBehavior="single">
         <item android:id="@+id/home"
             android:icon="@drawable/home"
             android:title="Home" />
@@ -10,6 +10,9 @@
         <item android:id="@+id/setting"
             android:icon="@drawable/setting"
             android:title="Setting" />
+        <item android:id="@+id/update_alarm"
+            android:icon="@drawable/update"
+            android:title="Daily Alarm Update" />
     </group>
 
     <item android:title="Birthday">
@@ -27,24 +30,8 @@
         </menu>
     </item>
 
-
-    <item android:title="Import From">
-        <menu>
-            <item android:id="@+id/contact_import"
-                android:icon="@drawable/contact_import"
-                android:title="Contact" />
-            <item android:id="@+id/fb_import"
-                android:icon="@drawable/people_add"
-                android:title="Facebook" />
-
-        </menu>
-    </item>
-
     <item android:title="Other">
         <menu>
-            <item android:id="@+id/share"
-                android:icon="@drawable/share"
-                android:title="Share" />
             <item android:id="@+id/privacy"
                 android:icon="@drawable/privacy"
                 android:title="Privacy Policy" />

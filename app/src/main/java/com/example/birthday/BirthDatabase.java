@@ -6,9 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class BirthDatabase {
     SQLiteDatabase sqLiteDatabase;
@@ -31,16 +31,21 @@ public class BirthDatabase {
     public boolean insertContact(ContactModel contactModel) {
         this.open();
         ContentValues contentValues = new ContentValues();
-        Log.d(CONTACT_DATABASE, "insert staret");
+        //Log.d(CONTACT_DATABASE, "insert staret");
         contentValues.put(DBOpenHelper.COL_NAME, contactModel.getName());
         contentValues.put(DBOpenHelper.COL_CONTACT, contactModel.getContact());
         contentValues.put(DBOpenHelper.COL_DAY, contactModel.getDay());
         contentValues.put(DBOpenHelper.COL_MONTH, contactModel.getMonth());
         contentValues.put(DBOpenHelper.COL_YEAR, contactModel.getYear());
+        contentValues.put(DBOpenHelper.COL_HOUR, contactModel.getHour());
+        contentValues.put(DBOpenHelper.COL_MINUTE, contactModel.getMinute());
+        contentValues.put(DBOpenHelper.COL_WISH, contactModel.getWish());
+        contentValues.put(DBOpenHelper.COL_MSG_STATE, contactModel.getMsgState());
+        contentValues.put(DBOpenHelper.COL_NOTI_STATE, contactModel.getNotificationState());
 
         long inserted = sqLiteDatabase.insert(sqLiteOpenHelper.DB_NAME,null, contentValues);
         this.close();
-        Log.d(CONTACT_DATABASE, "insert end");
+        //Log.d(CONTACT_DATABASE, "insert end");
         if (inserted > 0) {
             return true;
         }
@@ -63,13 +68,23 @@ public class BirthDatabase {
                 int day_idx = cursor.getColumnIndex(DBOpenHelper.COL_DAY);
                 int month_idx = cursor.getColumnIndex(DBOpenHelper.COL_MONTH);
                 int year_idx = cursor.getColumnIndex(DBOpenHelper.COL_YEAR);
+                int hour_idx = cursor.getColumnIndex(DBOpenHelper.COL_HOUR);
+                int min_idx = cursor.getColumnIndex(DBOpenHelper.COL_MINUTE);
+                int wish_idx = cursor.getColumnIndex(DBOpenHelper.COL_WISH);
+                int msgState_idx = cursor.getColumnIndex(DBOpenHelper.COL_MSG_STATE);
+                int notiState_idx = cursor.getColumnIndex(DBOpenHelper.COL_NOTI_STATE);
                 arrayList.add(new ContactModel(
                         cursor.getInt(id_idx),
                         cursor.getString(name_idx),
                         cursor.getString(contact_idx),
                         cursor.getInt(day_idx),
                         cursor.getInt(month_idx),
-                        cursor.getInt(year_idx)
+                        cursor.getInt(year_idx),
+                        cursor.getInt(hour_idx),
+                        cursor.getInt(min_idx),
+                        cursor.getString(wish_idx),
+                        cursor.getString(msgState_idx),
+                        cursor.getString(notiState_idx)
                     )
                 );
             } while (cursor.moveToNext());
@@ -105,6 +120,11 @@ public class BirthDatabase {
         contentValues.put(DBOpenHelper.COL_DAY, contactModel.getDay());
         contentValues.put(DBOpenHelper.COL_MONTH, contactModel.getMonth());
         contentValues.put(DBOpenHelper.COL_YEAR, contactModel.getYear());
+        contentValues.put(DBOpenHelper.COL_HOUR, contactModel.getHour());
+        contentValues.put(DBOpenHelper.COL_MINUTE, contactModel.getMinute());
+        contentValues.put(DBOpenHelper.COL_WISH, contactModel.getWish());
+        contentValues.put(DBOpenHelper.COL_MSG_STATE, contactModel.getMsgState());
+        contentValues.put(DBOpenHelper.COL_NOTI_STATE, contactModel.getNotificationState());
 
         int updated =   sqLiteDatabase.update(DBOpenHelper.DB_NAME,contentValues,DBOpenHelper.COL_ID + "= ?",new String[]{String.valueOf(contactModel.getId())});
         this.close();
@@ -115,7 +135,6 @@ public class BirthDatabase {
             return false;
         }
     }
-
 
 
     public ArrayList<ContactModel> getTodayBirth() {
@@ -141,13 +160,23 @@ public class BirthDatabase {
                 int day_idx = cursor.getColumnIndex(DBOpenHelper.COL_DAY);
                 int month_idx = cursor.getColumnIndex(DBOpenHelper.COL_MONTH);
                 int year_idx = cursor.getColumnIndex(DBOpenHelper.COL_YEAR);
+                int hour_idx = cursor.getColumnIndex(DBOpenHelper.COL_HOUR);
+                int min_idx = cursor.getColumnIndex(DBOpenHelper.COL_MINUTE);
+                int wish_idx = cursor.getColumnIndex(DBOpenHelper.COL_WISH);
+                int msgState_idx = cursor.getColumnIndex(DBOpenHelper.COL_MSG_STATE);
+                int notiState_idx = cursor.getColumnIndex(DBOpenHelper.COL_NOTI_STATE);
                 arrayList.add(new ContactModel(
                                 cursor.getInt(id_idx),
                                 cursor.getString(name_idx),
                                 cursor.getString(contact_idx),
                                 cursor.getInt(day_idx),
                                 cursor.getInt(month_idx),
-                                cursor.getInt(year_idx)
+                                cursor.getInt(year_idx),
+                                cursor.getInt(hour_idx),
+                                cursor.getInt(min_idx),
+                                cursor.getString(wish_idx),
+                                cursor.getString(msgState_idx),
+                                cursor.getString(notiState_idx)
                         )
                 );
             } while (cursor.moveToNext());
@@ -165,8 +194,10 @@ public class BirthDatabase {
         //Log.d(CONTACT_DATABASE, "get all start");
 
         Calendar calendar = Calendar.getInstance();
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.add(calendar.DATE, 1);
+        Date today = calendar.getTime();
+        calendar.setTime(today);
+        calendar.add(Calendar.DATE, 1);
+
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int month = calendar.get(Calendar.MONTH);
 
@@ -185,13 +216,23 @@ public class BirthDatabase {
                 int day_idx = cursor.getColumnIndex(DBOpenHelper.COL_DAY);
                 int month_idx = cursor.getColumnIndex(DBOpenHelper.COL_MONTH);
                 int year_idx = cursor.getColumnIndex(DBOpenHelper.COL_YEAR);
+                int hour_idx = cursor.getColumnIndex(DBOpenHelper.COL_HOUR);
+                int min_idx = cursor.getColumnIndex(DBOpenHelper.COL_MINUTE);
+                int wish_idx = cursor.getColumnIndex(DBOpenHelper.COL_WISH);
+                int msgState_idx = cursor.getColumnIndex(DBOpenHelper.COL_MSG_STATE);
+                int notiState_idx = cursor.getColumnIndex(DBOpenHelper.COL_NOTI_STATE);
                 arrayList.add(new ContactModel(
                                 cursor.getInt(id_idx),
                                 cursor.getString(name_idx),
                                 cursor.getString(contact_idx),
                                 cursor.getInt(day_idx),
                                 cursor.getInt(month_idx),
-                                cursor.getInt(year_idx)
+                                cursor.getInt(year_idx),
+                                cursor.getInt(hour_idx),
+                                cursor.getInt(min_idx),
+                                cursor.getString(wish_idx),
+                                cursor.getString(msgState_idx),
+                                cursor.getString(notiState_idx)
                         )
                 );
             } while (cursor.moveToNext());
@@ -225,13 +266,23 @@ public class BirthDatabase {
                 int day_idx = cursor.getColumnIndex(DBOpenHelper.COL_DAY);
                 int month_idx = cursor.getColumnIndex(DBOpenHelper.COL_MONTH);
                 int year_idx = cursor.getColumnIndex(DBOpenHelper.COL_YEAR);
+                int hour_idx = cursor.getColumnIndex(DBOpenHelper.COL_HOUR);
+                int min_idx = cursor.getColumnIndex(DBOpenHelper.COL_MINUTE);
+                int wish_idx = cursor.getColumnIndex(DBOpenHelper.COL_WISH);
+                int msgState_idx = cursor.getColumnIndex(DBOpenHelper.COL_MSG_STATE);
+                int notiState_idx = cursor.getColumnIndex(DBOpenHelper.COL_NOTI_STATE);
                 arrayList.add(new ContactModel(
                                 cursor.getInt(id_idx),
                                 cursor.getString(name_idx),
                                 cursor.getString(contact_idx),
                                 cursor.getInt(day_idx),
                                 cursor.getInt(month_idx),
-                                cursor.getInt(year_idx)
+                                cursor.getInt(year_idx),
+                                cursor.getInt(hour_idx),
+                                cursor.getInt(min_idx),
+                                cursor.getString(wish_idx),
+                                cursor.getString(msgState_idx),
+                                cursor.getString(notiState_idx)
                         )
                 );
             } while (cursor.moveToNext());
@@ -240,5 +291,13 @@ public class BirthDatabase {
         cursor.close();
         //Log.d(CONTACT_DATABASE, "get all end");
         return arrayList;
+    }
+
+    public boolean deleteAll(){
+        this.open();
+        int dd = sqLiteDatabase.delete(DBOpenHelper.DB_NAME,null,null);
+        this.close();
+        if(dd>0)return true;
+        else return false;
     }
 }

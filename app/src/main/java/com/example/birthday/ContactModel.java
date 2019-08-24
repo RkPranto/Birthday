@@ -3,7 +3,87 @@ package com.example.birthday;
 public class ContactModel {
     private int id;
     private  String name, contact;
-    private int day, month, year;
+    private int day, month, year, hour , minute;
+    private String wish, msgState, notificationState;
+
+
+    public ContactModel(String name, String contact, int day, int month, int year, int hour, int minute, String wish, String state) {
+        this.name = name;
+        this.contact = contact;
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        this.hour = hour;
+        this.minute = minute;
+        this.wish = wish;
+        this.msgState = state;
+    }
+
+    public ContactModel(int id,String name, String contact, int day, int month, int year, int hour, int minute, String wish, String state) {
+        this.id = id;
+        this.name = name;
+        this.contact = contact;
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        this.hour = hour;
+        this.minute = minute;
+        this.wish = wish;
+        this.msgState = state;
+    }
+
+    public ContactModel(String name, String contact, int day, int month, int year, int hour, int minute, String wish, String state, String notificationState) {
+        this.name = name;
+        this.contact = contact;
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        this.hour = hour;
+        this.minute = minute;
+        this.wish = wish;
+        this.msgState = state;
+        this.notificationState = notificationState;
+    }
+
+    public ContactModel(int id,String name, String contact, int day, int month, int year, int hour, int minute, String wish, String state, String notificationState) {
+        this.id = id;
+        this.name = name;
+        this.contact = contact;
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        this.hour = hour;
+        this.minute = minute;
+        this.wish = wish;
+        this.msgState = state;
+        this.notificationState = notificationState;
+    }
+
+
+    public ContactModel(int id,String name, String contact, int day, int month, int year, int hour, int minute, String wish) {
+        this.id = id;
+        this.name = name;
+        this.contact = contact;
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        this.hour = hour;
+        this.minute = minute;
+        this.wish = wish;
+    }
+
+
+
+    public ContactModel(String name, String contact, int day, int month, int year, int hour, int minute, String wish) {
+        this.name = name;
+        this.contact = contact;
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        this.hour = hour;
+        this.minute = minute;
+        this.wish = wish;
+    }
 
     public ContactModel(int id, String name, String contact, int day, int month, int year) {
         this.id = id;
@@ -14,7 +94,7 @@ public class ContactModel {
         this.year = year;
     }
 
-    public ContactModel(String name, String contact, int day, int month, int year) {
+    public ContactModel(String name, String contact, int day, int month, int year, int hour, int min) {
         this.name = name;
         this.contact = contact;
         this.day = day;
@@ -68,5 +148,45 @@ public class ContactModel {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public void setMinute(int minute) {
+        this.minute = minute;
+    }
+
+    public String getWish() {
+        return wish;
+    }
+
+    public void setWish(String wish) {
+        this.wish = wish;
+    }
+
+    public String getMsgState() {
+        return msgState;
+    }
+
+    public void setMsgState(String msgState) {
+        this.msgState = msgState;
+    }
+
+    public String getNotificationState() {
+        return notificationState;
+    }
+
+    public void setNotificationState(String notificationState) {
+        this.notificationState = notificationState;
     }
 }

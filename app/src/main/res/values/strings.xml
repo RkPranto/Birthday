@@ -12,5 +12,31 @@
     <string name="app_dev">App Developer</string>
     <string name="dev_name">Rezwan Pranto</string>
     <string name="dev_designation">Dept. of CSE, KUET</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="message_header">Messages</string>
+    <string name="notification_header">Notifications</string>
+
+    <!-- Messages Preferences -->
+    <string name="default_msg">Default Message</string>
+    <string name="default_msg_key">default_msg</string>
+    <string name="default_msg_summary">Set default message for automatic message</string>
+    <string name="default_msg_default_value">Happy birthday</string>
+
+    <string name="auto_msg">Automatic Messsage</string>
+    <string name="auto_msg_key">auto_msg</string>
+    <string name="auto_msg_summaryon">You will send automatic wish message</string>
+    <string name="auto_msg_summaryoff">Automatic wish message will not send</string>
+    <string name="auto_msg_default_value">Automatic Messsage</string>
+
+
+    <!-- Notification Preferences -->
+    <string name="notification">Birthday Notification</string>
+    <string name="notification_key">birth_notification</string>
+    <string name="notification_summaryon">Notify me when someones birthday</string>
+    <string name="notification_summaryoff">Do not notify me when someones birthday</string>
+    <string name="notification_default_value">true</string>
+
 
 </resources>

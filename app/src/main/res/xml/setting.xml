@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/message_header"
+        >
+        <EditTextPreference
+            app:key="@string/default_msg_key"
+            app:title="@string/default_msg"
+            android:summary="@string/default_msg_summary"
+            android:defaultValue="@string/default_msg_default_value"
+            />
+
+        <SwitchPreferenceCompat
+            app:key="@string/auto_msg_key"
+            app:summaryOff="@string/auto_msg_summaryoff"
+            app:summaryOn="@string/auto_msg_summaryon"
+            app:title="@string/auto_msg"
+            android:defaultValue="true"
+
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/notification_header">
+
+        <SwitchPreferenceCompat
+            app:key="@string/notification_key"
+            app:summaryOff="@string/notification_summaryoff"
+            app:summaryOn="@string/notification_summaryon"
+            app:title="@string/notification"
+            android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+
+    <SwitchPreferenceCompat
+        app:key="splash"
+        app:summaryOff="Splash Screen turned off now"
+        app:summaryOn="Splash Screen turned on now"
+        app:title="Splash Screen "
+        android:defaultValue="true"/>
+</PreferenceScreen>

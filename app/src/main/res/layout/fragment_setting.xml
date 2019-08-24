@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<PreferenceScreen
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Setting">
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="General">
+        <EditTextPreference
+            android:defaultValue="Default Value"
+            android:key="Key"
+            android:summary="Default summary here"
+            android:title="Edit Title" />
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="Wifi"
+            android:summary="Summary wifi default"
+            android:title="Wifi State" />
 
-</FrameLayout>
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

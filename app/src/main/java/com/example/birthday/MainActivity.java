@@ -4,71 +4,63 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
-import android.app.Dialog;
-import android.content.ContentResolver;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
-
-import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity
-                        implements HomeFragment.OnClickDrawerOpen {
+public class MainActivity extends AppCompatActivity{
     Toolbar mToolbar;
-    ContactAdapter  contactAdapter;
     BirthDatabase  birthDatabase;
-    TextView textViewQueryResult;
-    EditText editText ;
-    ArrayList<ContactModel> arrayList = new ArrayList<>();
+
     //Fragement
     FragmentManager fm;
-    SearchView searchView;
 
     //Navigation Drawer
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
 
-    //Contact Inport
+
     SharedPreferences preferences ;
     SharedPreferences.Editor editor;
 
-    //Search
-    boolean imported ;
+    //Update alarm time
+    TextView ins;
+    Button upAlarmTime, doneBtn;
+    boolean isAlarmSet = false;
+    TimePickerDialog.OnTimeSetListener alarmTimeListener;
+    int alarmHour, alarmMin;
+
+    Random rand = new Random();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(mToolbar);
         //searchFromRecycler(birthDatabase.getAllContact());
 
-       /* toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(drawerLayout.isDrawerOpen(GravityCompat.START)){
@@ -90,7 +82,13 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-*/
+
+       if(preferences.getBoolean("set_alarm", false) == false){
+           setDailyAlarm();
+           Log.d("Alarm", "Pref");
+           editor.putBoolean("set_alarm", true);
+           editor.commit();
+       }
 
         drawerLayout.addDrawerListener(toggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -107,61 +105,45 @@ public class MainActivity extends AppCompatActivity
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
+
                 switch (menuItem.getItemId()){
                     case R.id.home:
                         fragmentTransaction.replace(R.id.content_area,new HomeFragment()).commit();
-
                         break;
                     case R.id.setting:
-                        fragmentTransaction.replace(R.id.content_area, new Setting()).commit();
+                        fragmentTransaction.replace(R.id.content_area, new SettingsActivity()).commit();
                         break;
 
                     case R.id.add_new:
 
                         fragmentTransaction.replace(R.id.content_area, new AddFragment()).commit();
                         break;
+
+                    case R.id.update_alarm:
+                        updateAlarmDialog();
+                        break;
                     case R.id.todaybd:
                         showBirthdays("today");
-                        Toast.makeText( MainActivity.this, " Today Birthday",Toast.LENGTH_SHORT).show();
+                        //Toast.makeText( MainActivity.this, " Today Birthday",Toast.LENGTH_SHORT).show();
 
                         break;
                     case R.id.tomorrowbd:
                         showBirthdays("tomorrow");
-                        Toast.makeText( MainActivity.this, " Tommorow Birthday",Toast.LENGTH_SHORT).show();
+                       // Toast.makeText( MainActivity.this, " Tommorow Birthday",Toast.LENGTH_SHORT).show();
 
                         break;
 
                     case R.id.thismonthbd:
-                        Toast.makeText( MainActivity.this, " Month Birthday",Toast.LENGTH_SHORT).show();
-
+                       // Toast.makeText( MainActivity.this, " Month Birthday",Toast.LENGTH_SHORT).show();
                         showBirthdays("month");
                         break;
-                    case R.id.contact_import:
-                        if(!alreadyImported()){
-                            importFromContact();
-                        }
-                        else{
-                            Toast.makeText( MainActivity.this, " Already Imported from Contact",Toast.LENGTH_LONG).show();
-                        }
 
-
-
-                        break;
-                    case R.id.fb_import:
-
-
-                        break;
-                    case R.id.share:
-
-
-                        break;
                     case R.id.privacy:
-
+                        fragmentTransaction.replace(R.id.content_area, new PrivacyFragment()).commit();
 
                         break;
                     case R.id.help:
-
-
+                        fragmentTransaction.replace(R.id.content_area, new HelpFragment()).commit();
                         break;
                     case R.id.about_devloper:
                         aboutDeveloper();
@@ -171,9 +153,9 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(MainActivity.this,"Wrong Clicked somehow !",Toast.LENGTH_SHORT).show();
                         break;
                 }
-
+                int id = menuItem.getItemId();
+                navigationView.setCheckedItem(id);
                 drawerLayout.closeDrawer(GravityCompat.START);
-
                 return true;
             }
         });
@@ -181,17 +163,88 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private boolean alreadyImported() {
+    private void updateAlarmDialog() {
+        Calendar c = Calendar.getInstance();
+        alarmHour = c.get(Calendar.HOUR_OF_DAY);
+        alarmMin = c.get(Calendar.MINUTE);
 
-        if(preferences.getBoolean("imported", false) == true){
-            return true;
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
+        View v = layoutInflater.inflate(R.layout.set_daily_alarm_update,null);
+        ins = v.findViewById(R.id.instruction);
+        upAlarmTime = v.findViewById(R.id.update_time);
+        doneBtn = v.findViewById(R.id.done_btn);
+
+        int hh = 0, mm =0;
+        if(preferences.getInt("hour",99) != 99){
+            hh = preferences.getInt("hour",99);
         }
-        else{
-            editor.putBoolean("imported", true);
-            editor.commit();
-            return false;
+        if(preferences.getInt("minute",88) != 88){
+            mm = preferences.getInt("minute",88);
         }
+        String bdtime = ((hh%12==0)?"12": ((hh%12)>9)?(hh%12):"0"+(hh%12)) +" : "+
+                ((mm>9)? mm: "0"+mm)+" "+
+                ((hh>=12)?"PM":"AM");
+        upAlarmTime.setText(bdtime);
+
+        ins.setText("***Please set time for daily alarm. We will schedule(not send) all notifications and messages on that time daily once.");
+
+        final AlertDialog dialog = builder.create();
+
+        upAlarmTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this,
+                        android.R.style.Theme_DeviceDefault_Light_Dialog,
+                        alarmTimeListener,
+                        alarmHour,
+                        alarmMin,
+                        DateFormat.is24HourFormat(MainActivity.this)
+                        );
+
+
+                isAlarmSet = true;
+                timePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+                timePickerDialog.show();
+            }
+        });
+
+        alarmTimeListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                alarmHour = hourOfDay;
+                alarmMin = minute;
+                String bdtime = "Update Time: ";
+                bdtime += ((alarmHour%12==0)?"12": ((alarmHour%12)>9)?(alarmHour%12):"0"+(alarmHour%12)) +" : "+
+                        ((alarmMin>9)? alarmMin: "0"+alarmMin)+" "+
+                        ((alarmHour>=12)?"PM":"AM");
+                upAlarmTime.setText(bdtime);
+            }
+        };
+
+        doneBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isAlarmSet){
+                    editor.putInt("hour", alarmHour);
+                    editor.putInt("minute", alarmMin);
+                    editor.commit();
+                    setDailyAlarm();
+                    Toast.makeText(MainActivity.this,"Daily update time has been set !", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(MainActivity.this,"First set alarm update time!", Toast.LENGTH_LONG).show();
+                }
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setView(v);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
     }
+
 
     private void showBirthdays(String day) {
         BirthdayFragement birthdayFragement = new BirthdayFragement();
@@ -201,7 +254,6 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.content_area,birthdayFragement ).commit();
     }
-
 
     private void aboutDeveloper() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -242,72 +294,42 @@ public class MainActivity extends AppCompatActivity
         dialog.show();
     }
 
-
-    private void importFromContact() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if( getApplicationContext().checkSelfPermission(Manifest.permission.READ_CONTACTS )
-                    != PackageManager.PERMISSION_GRANTED ) {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_CONTACTS},
-                        0);
-            }
-        }
-
-
-        ContentResolver contentResolver = getContentResolver();
-
-
-        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String[] projection= new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
-                ContactsContract.CommonDataKinds.Phone.NUMBER};
-        String selection = null;
-        String[] selectionArg = null;
-        String orderBy = "";
-
-        Cursor cursor=contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                projection,
-                null,
-                null,
-                "");
-
-        if(cursor!=null && cursor.getCount()>0){
-            String name, phone;
-            ContactModel contactModel;
-            while (cursor.moveToNext()){
-                name = cursor.getString(0);
-                phone = cursor.getString(1);
-                contactModel = new ContactModel(name, phone, 01, 01 ,2000);
-                birthDatabase.insertContact(contactModel);
-            }
-            //loadRecyclerContent(birthDatabase.getAllContact());
-        }
-
-
-    }
-
     private void init() {
         mToolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+        birthDatabase = new BirthDatabase(MainActivity.this);
         toggle = new ActionBarDrawerToggle(MainActivity.this,
                 drawerLayout,
                 mToolbar,
                 R.string.navigation_open,
                 R.string.navigation_close);
 
-        preferences = getApplicationContext().getSharedPreferences("ContactInfoPref", MODE_PRIVATE);
+        preferences = getApplicationContext().getSharedPreferences("Pref", MODE_PRIVATE);
         editor = preferences.edit();
-
-
     }
 
     @Override
     public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
+        }
+
+        else if(R.id.setting == navigationView.getCheckedItem().getItemId()
+        || R.id.add_new == navigationView.getCheckedItem().getItemId()
+        || R.id.help == navigationView.getCheckedItem().getItemId()
+        || R.id.thismonthbd == navigationView.getCheckedItem().getItemId()
+        || R.id.todaybd == navigationView.getCheckedItem().getItemId()
+        || R.id.tomorrowbd == navigationView.getCheckedItem().getItemId()
+        || R.id.privacy == navigationView.getCheckedItem().getItemId()){
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            fragmentTransaction.replace(R.id.content_area,new HomeFragment()).commit();
         }
         else{
             super.onBackPressed();
         }
+
     }
 
     @Override
@@ -317,17 +339,46 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
-    @Override
-    public void openNavDrawer(boolean x) {
-        if(x == true){
-            if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-                drawerLayout.closeDrawer(GravityCompat.START);
-            }
-            else{
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
+    public void setDailyAlarm(){
+        //Log.d("Alarm", "Set alarm called");
+        Calendar calendar = Calendar.getInstance();
+        int hh = 0, mm = 0;
+        if(preferences.getInt("hour",99) != 99){
+            hh = preferences.getInt("hour",99);
+        }
+        if(preferences.getInt("minute",88) != 88){
+            mm = preferences.getInt("minute",88);
         }
 
+        //Log.d("ALARM",hh+": "+mm);
+
+        calendar.set(Calendar.HOUR_OF_DAY, hh);
+        calendar.set(Calendar.MINUTE, mm );
+        calendar.set(Calendar.SECOND, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(MainActivity.this, MessageAndNotificationSetter.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,
+                rand.nextInt(1000),
+                i,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY,
+                pendingIntent
+                );
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //The action bar home/up action will open or close
+        if(item.getItemId() == android.R.id.home){
+            drawerLayout.openDrawer(GravityCompat.START);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
