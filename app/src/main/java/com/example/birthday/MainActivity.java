@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity{
 
     Random rand = new Random();
 
+    Boolean isNeedToHome = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,29 +85,29 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-       if(preferences.getBoolean("set_alarm", false) == false){
+       if(preferences.getBoolean("ALARM", false) == false){
            setDailyAlarm();
            Log.d("Alarm", "Pref");
-           editor.putBoolean("set_alarm", true);
+           editor.putBoolean("ALARM", true);
            editor.commit();
        }
 
         drawerLayout.addDrawerListener(toggle);
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toggle.syncState();
 
 
 
-        HomeFragment homeFragment = new HomeFragment();
+        final HomeFragment homeFragment = new HomeFragment();
         fm = getSupportFragmentManager();
             fm.beginTransaction().replace(R.id.content_area,homeFragment).commit();
+            navigationView.setCheckedItem(R.id.home);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-
-
                 switch (menuItem.getItemId()){
                     case R.id.home:
                         fragmentTransaction.replace(R.id.content_area,new HomeFragment()).commit();
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity{
                         break;
 
                     case R.id.add_new:
-
+                        //fragmentTransaction.remove(homeFragment).commit();
                         fragmentTransaction.replace(R.id.content_area, new AddFragment()).commit();
                         break;
 
@@ -123,26 +125,31 @@ public class MainActivity extends AppCompatActivity{
                         updateAlarmDialog();
                         break;
                     case R.id.todaybd:
+                        isNeedToHome = true;
                         showBirthdays("today");
                         //Toast.makeText( MainActivity.this, " Today Birthday",Toast.LENGTH_SHORT).show();
 
                         break;
                     case R.id.tomorrowbd:
+                        isNeedToHome = true;
                         showBirthdays("tomorrow");
                        // Toast.makeText( MainActivity.this, " Tommorow Birthday",Toast.LENGTH_SHORT).show();
 
                         break;
 
                     case R.id.thismonthbd:
+                        isNeedToHome = true;
                        // Toast.makeText( MainActivity.this, " Month Birthday",Toast.LENGTH_SHORT).show();
                         showBirthdays("month");
                         break;
 
                     case R.id.privacy:
+                        isNeedToHome = true;
                         fragmentTransaction.replace(R.id.content_area, new PrivacyFragment()).commit();
 
                         break;
                     case R.id.help:
+                        isNeedToHome = true;
                         fragmentTransaction.replace(R.id.content_area, new HelpFragment()).commit();
                         break;
                     case R.id.about_devloper:
@@ -154,6 +161,7 @@ public class MainActivity extends AppCompatActivity{
                         break;
                 }
                 int id = menuItem.getItemId();
+
                 navigationView.setCheckedItem(id);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
@@ -164,6 +172,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void updateAlarmDialog() {
+
         Calendar c = Calendar.getInstance();
         alarmHour = c.get(Calendar.HOUR_OF_DAY);
         alarmMin = c.get(Calendar.MINUTE);
@@ -182,6 +191,7 @@ public class MainActivity extends AppCompatActivity{
         if(preferences.getInt("minute",88) != 88){
             mm = preferences.getInt("minute",88);
         }
+        Log.d("Alarm", "Update: "+ hh+ ": "+mm);
         String bdtime = ((hh%12==0)?"12": ((hh%12)>9)?(hh%12):"0"+(hh%12)) +" : "+
                 ((mm>9)? mm: "0"+mm)+" "+
                 ((hh>=12)?"PM":"AM");
@@ -236,6 +246,7 @@ public class MainActivity extends AppCompatActivity{
                     Toast.makeText(MainActivity.this,"First set alarm update time!", Toast.LENGTH_LONG).show();
                 }
                 dialog.dismiss();
+                navigationView.setCheckedItem(R.id.home);
             }
         });
 
@@ -315,20 +326,26 @@ public class MainActivity extends AppCompatActivity{
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }
-
-        else if(R.id.setting == navigationView.getCheckedItem().getItemId()
-        || R.id.add_new == navigationView.getCheckedItem().getItemId()
-        || R.id.help == navigationView.getCheckedItem().getItemId()
-        || R.id.thismonthbd == navigationView.getCheckedItem().getItemId()
-        || R.id.todaybd == navigationView.getCheckedItem().getItemId()
-        || R.id.tomorrowbd == navigationView.getCheckedItem().getItemId()
-        || R.id.privacy == navigationView.getCheckedItem().getItemId()){
+        int navSelected = navigationView.getCheckedItem().getItemId();
+        if(R.id.setting == navSelected
+                || R.id.add_new == navSelected
+            ) {
+            //Toast.makeText(MainActivity.this,"Nav ID", Toast.LENGTH_SHORT).show();
+            navigationView.setCheckedItem(R.id.home);
             FragmentTransaction fragmentTransaction = fm.beginTransaction();
-            fragmentTransaction.replace(R.id.content_area,new HomeFragment()).commit();
+            fragmentTransaction.replace(R.id.content_area, new HomeFragment()).commit();
+        }
+        else if(isNeedToHome){
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            fragmentTransaction.replace(R.id.content_area, new HomeFragment()).commit();
+            isNeedToHome = false;
         }
         else{
+            //Toast.makeText(MainActivity.this,"Nav Super", Toast.LENGTH_SHORT).show();
             super.onBackPressed();
         }
+        //Toast.makeText(MainActivity.this,navigationView.getCheckedItem().toString(), Toast.LENGTH_SHORT).show();
+
 
     }
 
@@ -340,8 +357,9 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void setDailyAlarm(){
-        //Log.d("Alarm", "Set alarm called");
+
         Calendar calendar = Calendar.getInstance();
+
         int hh = 0, mm = 0;
         if(preferences.getInt("hour",99) != 99){
             hh = preferences.getInt("hour",99);
@@ -349,7 +367,7 @@ public class MainActivity extends AppCompatActivity{
         if(preferences.getInt("minute",88) != 88){
             mm = preferences.getInt("minute",88);
         }
-
+        //Log.d("Alarm", "Set alarm called: "+hh+ " : "+mm);
         //Log.d("ALARM",hh+": "+mm);
 
         calendar.set(Calendar.HOUR_OF_DAY, hh);
@@ -359,7 +377,7 @@ public class MainActivity extends AppCompatActivity{
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(MainActivity.this, MessageAndNotificationSetter.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,
-                rand.nextInt(1000),
+                1,
                 i,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 

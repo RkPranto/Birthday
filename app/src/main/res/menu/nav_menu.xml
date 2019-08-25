@@ -15,8 +15,9 @@
             android:title="Daily Alarm Update" />
     </group>
 
-    <item android:title="Birthday">
-        <menu>
+    <item android:title="Birthday"
+        android:id="@+id/birthday_type">
+        <menu >
 
             <item android:id="@+id/todaybd"
                 android:icon="@drawable/birthday"

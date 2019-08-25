@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Handler;
 
@@ -56,7 +58,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
-        holder.contactTv.setText(arrayList.get(position).getContact());
+        String c = arrayList.get(position).getContact();
+        if(c.isEmpty() || c == null){
+            //holder.contactTv.setText("Not Entered");
+            holder.contactTv.setVisibility(View.GONE);
+        }else{
+            holder.contactTv.setVisibility(View.VISIBLE);
+            holder.contactTv.setText(c);
+        }
+
         String x = " " +arrayList.get(position).getWish()+" "+ arrayList.get(position).getHour();
         holder.nameTv.setText(arrayList.get(position).getName());
 
@@ -161,7 +171,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                     msgState = arrayList.get(getAdapterPosition()).getMsgState();
                     notificationState = arrayList.get(getAdapterPosition()).getNotificationState();
 
-                    bd = "Change >>  "+day + " - "+month+ "- "+year;
+                    bd = "Change >>  "+(day>9?day:"0"+day) + " - "+((month+1)>9?(month+1):"0"+(month+1))+ " - "+year;
                     upName.setText(name);
                     upContact.setText(contact);
                     upBirthdate.setText(bd);
@@ -320,8 +330,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                             if(updatedName.isEmpty()){
                                 Toast.makeText(context,"Name field can't be empty !",Toast.LENGTH_SHORT).show();
                             }
-                            else if(updatedContact.isEmpty()){
-                                Toast.makeText(context,"Name field can't be empty !",Toast.LENGTH_SHORT).show();
+                            else if(autoMsg.equals("on")) {
+                                if (updatedContact.isEmpty()) {
+                                    Toast.makeText(context, "Contact number is needed to send SMS !", Toast.LENGTH_SHORT).show();
+                                }
                             }
                             else{
                                 ContactModel contact = new ContactModel(id,
@@ -335,6 +347,20 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                                 );
                                 boolean x = birthDatabase.updateItem(contact);
                                 if(x){
+                                    MessageAndNotificationHelper helper = new MessageAndNotificationHelper(context);
+                                    Calendar calendar = Calendar.getInstance();
+                                    int d  = calendar.get(Calendar.DAY_OF_MONTH);
+                                    int m = calendar.get(Calendar.MONTH);
+                                    if(d == contact.getDay() && m == contact.getMonth()) {
+                                        if (contact.getMsgState().equals("on")) {
+                                            helper.sendMessage(contact);
+                                            //Log.d("Helper: ", "msg send adapter");
+                                        }
+                                        if (contact.getNotificationState().equals("on")) {
+                                            helper.sendNotification(contact);
+                                            //Log.d("Helper: ", "noti send adapter");
+                                        }
+                                    }
                                     Toast.makeText(context,"Updated Successfully !",Toast.LENGTH_SHORT).show();
                                     goToHomeFragment(v);
                                 }

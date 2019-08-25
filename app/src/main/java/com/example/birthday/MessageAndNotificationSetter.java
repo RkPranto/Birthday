@@ -23,7 +23,7 @@ public class MessageAndNotificationSetter extends BroadcastReceiver {
         int month = cal.get(Calendar.MONTH);
 
         if(DefaultSettings.autoMessageEnanbled(context)){
-            //Log.d("Msg","triggered inner");
+            //Log.d("Helper","Setter MSG");
 
             for(ContactModel c: arrayList){
                 if(c.getMsgState().equals("on") && day == c.getDay() && month == c.getMonth()){
@@ -33,7 +33,7 @@ public class MessageAndNotificationSetter extends BroadcastReceiver {
         }
 
         if(DefaultSettings.notificationEnanbled(context)){
-
+            //Log.d("Helper","Setter NOTI");
             for(ContactModel c: arrayList){
                 if(c.getNotificationState().equals("on")  && day == c.getDay() && month == c.getMonth()){
                     messageAndNotificationHelper.sendNotification(c);

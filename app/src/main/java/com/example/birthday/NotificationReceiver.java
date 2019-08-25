@@ -13,10 +13,11 @@ public class NotificationReceiver extends BroadcastReceiver {
     private static Random rand = new Random();
     @Override
     public void onReceive(Context context, Intent intent) {
-        //Log.d("Noti","triggered");
+        //Log.d("Helper","Noti");
         if(DefaultSettings.notificationEnanbled(context)){
             String channelId = intent.getStringExtra("number");
             String channelName = intent.getStringExtra("name");
+            //Log.d("Helper: ", channelName + " "+channelId);
             channelName = channelName.substring(0,1).toUpperCase() + channelName.substring(1);
 
             String title = intent.getStringExtra("name")+"'s birthday today";

@@ -32,10 +32,10 @@
 
                 <ImageView
                     android:id="@+id/profile_pic_iv"
-                    android:paddingRight="10dp"
-                    android:layout_margin="10dp"
                     android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:paddingRight="10dp"
                     android:src="@drawable/icon" />
             </LinearLayout>
 
@@ -98,7 +98,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:layout_width="0dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 android:layout_height="match_parent">
 
                 <ImageView

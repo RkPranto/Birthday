@@ -17,13 +17,12 @@
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"></activity>
 
-        <receiver android:name=".MessageReceiver" android:enabled="true">>
+        <receiver android:name=".MessageReceiver" android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -31,7 +30,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".MessageAndNotificationSetter" android:enabled="true">>
+        <receiver android:name=".MessageAndNotificationSetter" android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -39,7 +38,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".NotificationReceiver" android:enabled="true">>
+        <receiver android:name=".NotificationReceiver" android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />

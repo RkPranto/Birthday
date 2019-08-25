@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
@@ -87,6 +88,12 @@ public class AddFragment extends Fragment {
                 checkAutoMsgCheckBox();
             }
         });
+        mNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkNotificationCheckBox();
+            }
+        });
 
         saveToDatabase();
 
@@ -99,7 +106,6 @@ public class AddFragment extends Fragment {
         contactImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 checkContactPermission();
             }
         });
@@ -137,16 +143,25 @@ public class AddFragment extends Fragment {
                 if(name.isEmpty()){
                     Toast.makeText(context,"Name field can't be empty !", Toast.LENGTH_LONG).show();
                 }
-                else if(contact.isEmpty()){
-                    Toast.makeText(context,"Contact number field can't be empty !", Toast.LENGTH_LONG).show();
-                }
                 else if(!isBirthSet){
                     Toast.makeText(context,"You must set birthday ! If you don't remember birth year, just select any year :)", Toast.LENGTH_LONG).show();
                 }
-                else if(msgState.equals("on") || notificationState.equals("on")){
+                else if(msgState.equals("on")){
+                    if(contact.isEmpty()){
+                        Toast.makeText(context,"Contact number is needed to send SMS !", Toast.LENGTH_LONG).show();
+                    }
+                    else if(!isTimeSet){
+                        //time not set
+                        Toast.makeText(context,"Auto Messages require time !", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        insertSingleData();
+                    }
+                }
+                else if (notificationState.equals("on")){
                     if(!isTimeSet){
                         //time not set
-                        Toast.makeText(context,"Auto Message and Notification require time !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,"Notifications require time !", Toast.LENGTH_LONG).show();
                     }
                     else{
                         insertSingleData();
@@ -167,6 +182,7 @@ public class AddFragment extends Fragment {
 
         boolean fine = birthDatabase.insertContact(contactModel);
         if(fine){
+            setAlarmCurrent(contactModel);
             Toast.makeText(context,"Saved Successfully !", Toast.LENGTH_SHORT).show();
             checkSMSPermission();
         }
@@ -174,7 +190,27 @@ public class AddFragment extends Fragment {
             Toast.makeText(context,"Saving Error !", Toast.LENGTH_SHORT).show();
         }
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().replace(R.id.content_area,new HomeFragment()).commit();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.remove(this).commit();
+        fm.popBackStack();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.add(R.id.content_area,new HomeFragment()).commit();
+    }
+
+    private void setAlarmCurrent(ContactModel c) {
+        MessageAndNotificationHelper mm = new MessageAndNotificationHelper(context);
+        Calendar calendar = Calendar.getInstance();
+        int d  = calendar.get(Calendar.DAY_OF_MONTH);
+        int m = calendar.get(Calendar.MONTH);
+        if(d == c.getDay() && m == c.getMonth()){
+            if(c.getMsgState().equals("on")){
+                mm.sendMessage(c);
+            }
+            if(c.getNotificationState().equals("on")){
+                mm.sendNotification(c);
+            }
+        }
+
     }
 
     private void setBirthday() {

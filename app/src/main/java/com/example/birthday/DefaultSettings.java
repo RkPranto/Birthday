@@ -23,7 +23,7 @@ public class DefaultSettings {
 
     public static String getDefaultMessage(Context context){
         getSharedPreferencesInstance(context);
-        return sharedPreferences.getString("default_msg", "");
+        return sharedPreferences.getString("default_msg", "Happy Birthday");
     }
 
     public static boolean splashScreenEnabled(Context context){

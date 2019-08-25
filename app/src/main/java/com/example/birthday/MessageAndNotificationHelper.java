@@ -39,14 +39,18 @@ public class MessageAndNotificationHelper {
                 random.nextInt(20000),
                 msgIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, msgPending);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,triggerTime, msgPending);
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP,triggerTime, msgPending);
-        }
+        //Log.d("Helper", "Msg pending end");
+        if(triggerTime == 0){
+            //cancel pending intent
+            alarmManager.cancel(msgPending);
+        }else
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, msgPending);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,triggerTime, msgPending);
+            } else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP,triggerTime, msgPending);
+            }
 
     }
 
@@ -55,6 +59,10 @@ public class MessageAndNotificationHelper {
         String name = c.getName();
         String contact = c.getContact();
         long triggerTime = setUpCalender(c);
+        //Log.d("Helper", "noti cal time end");
+        if(contact.equals("") || contact == null){
+            contact = String.valueOf(random.nextInt());
+        }
         Intent notificationIntent = new Intent(context,NotificationReceiver.class);
         notificationIntent.putExtra("name", name);
         notificationIntent.putExtra("number", contact);
@@ -64,14 +72,19 @@ public class MessageAndNotificationHelper {
                 notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
+        if(triggerTime == 0){
+            //cancel pending intent
+            alarmManager.cancel(notificationPending);
+        }else
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, notificationPending);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,triggerTime, notificationPending);
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP,triggerTime, notificationPending);
-        }
+            //Log.d("Helper", "noti pending end");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, notificationPending);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,triggerTime, notificationPending);
+            } else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP,triggerTime, notificationPending);
+            }
     }
 
 
@@ -88,7 +101,7 @@ public class MessageAndNotificationHelper {
         now.set(Calendar.MILLISECOND, 0);
 
         if(cal.before(now)){
-            cal.add(Calendar.MONTH, 12);
+            return 0;
         }
         return cal.getTimeInMillis();
     }

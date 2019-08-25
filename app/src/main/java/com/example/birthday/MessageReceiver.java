@@ -15,6 +15,8 @@ public class MessageReceiver extends BroadcastReceiver {
         String number = intent.getStringExtra("number");
         String text = intent.getStringExtra("message");
 
+        //Log.d("Helper: ", number + " "+text);
+
         if(text.equals("NULL")){
             text = DefaultSettings.getDefaultMessage(context);
         }
