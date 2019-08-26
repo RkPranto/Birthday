@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.addToBackStack(null);
+                //fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.replace(R.id.content_area,new AddFragment()).commit();
                 //Toast.makeText(context,"Add Fragment", Toast.LENGTH_SHORT).show();
             }
