@@ -58,6 +58,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
+
+        String firstLetter = arrayList.get(position).getName().substring(0,1);
+        holder.profileIcon.setText(firstLetter);
+
+
         String c = arrayList.get(position).getContact();
         if(c.isEmpty() || c == null){
             //holder.contactTv.setText("Not Entered");
@@ -113,9 +118,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     public class ContactViewHolder extends RecyclerView.ViewHolder{
         TextView nameTv, contactTv, birthdayTv;
         ImageView notificationIv, messageIv;
+        Button profileIcon;
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            profileIcon = itemView.findViewById(R.id.profile_pic_icon);
             nameTv = itemView.findViewById(R.id.name_tv);
             contactTv = itemView.findViewById(R.id.contact_tv);
             birthdayTv = itemView.findViewById(R.id.birthdate_tv);
@@ -330,10 +337,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                             if(updatedName.isEmpty()){
                                 Toast.makeText(context,"Name field can't be empty !",Toast.LENGTH_SHORT).show();
                             }
-                            else if(autoMsg.equals("on")) {
-                                if (updatedContact.isEmpty()) {
-                                    Toast.makeText(context, "Contact number is needed to send SMS !", Toast.LENGTH_SHORT).show();
-                                }
+                            else if(msgState.equals("on") && updatedContact.isEmpty()) {
+                                Toast.makeText(context, "Contact number is needed to send SMS !", Toast.LENGTH_SHORT).show();
                             }
                             else{
                                 ContactModel contact = new ContactModel(id,
@@ -361,6 +366,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                                             //Log.d("Helper: ", "noti send adapter");
                                         }
                                     }
+                                    dialog.dismiss();
                                     Toast.makeText(context,"Updated Successfully !",Toast.LENGTH_SHORT).show();
                                     goToHomeFragment(v);
                                 }
@@ -369,7 +375,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                                 }
                             }
 
-                            dialog.dismiss();
+
                         }
                     });
                 }
