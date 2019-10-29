@@ -117,16 +117,6 @@
                     android:buttonTint="@color/colorgreen"
                     />
 
-                <CheckBox
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:id="@+id/check_auto"
-                    android:text="Auto wish SMS"
-                    android:layout_marginLeft="15dp"
-                    android:backgroundTint="@color/colorBlackish"
-                    android:buttonTint="@color/colorgreen"
-                    />
-
 
                 <LinearLayout
                     android:id="@+id/auto_or_not"

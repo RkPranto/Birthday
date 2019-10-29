@@ -11,15 +11,6 @@
             android:defaultValue="@string/default_msg_default_value"
             />
 
-        <SwitchPreferenceCompat
-            app:key="@string/auto_msg_key"
-            app:summaryOff="@string/auto_msg_summaryoff"
-            app:summaryOn="@string/auto_msg_summaryon"
-            app:title="@string/auto_msg"
-            android:defaultValue="true"
-
-            />
-
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/notification_header">
@@ -34,10 +25,20 @@
     </PreferenceCategory>
 
 
-    <SwitchPreferenceCompat
-        app:key="splash"
-        app:summaryOff="Splash Screen turned off now"
-        app:summaryOn="Splash Screen turned on now"
-        app:title="Splash Screen "
-        android:defaultValue="true"/>
+    <PreferenceCategory android:title="Others">
+
+        <SwitchPreferenceCompat
+            app:key="splash"
+            app:summaryOff="Splash Screen turned off now"
+            app:summaryOn="Splash Screen turned on now"
+            app:title="Splash Screen "
+            android:defaultValue="true"/>
+
+        <SwitchPreferenceCompat
+            app:key="sort"
+            app:summaryOff="Sorted by Birthday"
+            app:summaryOn="Sorted by name"
+            app:title="Birthday List Sort"
+            android:defaultValue="true"/>
+    </PreferenceCategory>
 </PreferenceScreen>
